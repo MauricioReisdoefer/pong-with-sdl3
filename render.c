@@ -13,5 +13,4 @@ void render(SDL_Renderer *renderer, const Color *backgroundColor)
         backgroundColor->alpha);
 
     SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
 }

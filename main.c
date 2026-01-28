@@ -5,13 +5,40 @@
 
 #include "color.h"
 #include "render.h"
+#include "player.h"
 
 const int HEIGHT = 500;
 const int WIDTH = 500;
 const Color WHITE = {255, 255, 255, 255};
+const Color BLACK = {0, 0, 0, 0};
+
+void draw_rect(SDL_Renderer *renderer, Player *player, const Color *color)
+{
+    SDL_FRect rect = {
+        player->x,
+        player->y,
+        player->width,
+        player->height};
+
+    SDL_SetRenderDrawColor(
+        renderer,
+        color->red,
+        color->green,
+        color->blue,
+        color->alpha);
+
+    SDL_RenderFillRect(renderer, &rect);
+}
 
 int main(int argc, char *argv[])
 {
+    Player player = {
+        .x = 20.0f,
+        .y = 200.0f,
+        .width = 10.0f,
+        .height = 80.0f,
+        .speed = 300.0f};
+
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
         SDL_Log("SDL_Init Failed!");
@@ -25,15 +52,36 @@ int main(int argc, char *argv[])
     int running = 1;
     SDL_Event event;
 
+    Uint64 lastTime = SDL_GetTicks();
+    float deltaTime;
+
     while (running)
     {
+
+        Uint64 currentTime = SDL_GetTicks();
+        deltaTime = (currentTime - lastTime) / 1000.0f;
+        lastTime = currentTime;
+
+        const bool *keys = SDL_GetKeyboardState(NULL);
+
+        if (keys[SDL_SCANCODE_S] == true)
+        {
+            player.y += player.speed * deltaTime;
+        }
+
+        if (keys[SDL_SCANCODE_W] == true)
+        {
+            player.y -= player.speed * deltaTime;
+        }
+
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_EVENT_QUIT)
                 running = 0;
         }
-
-        render(renderer, &WHITE);
+        render(renderer, &BLACK);
+        draw_rect(renderer, &player, &WHITE);
+        SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyRenderer(renderer);

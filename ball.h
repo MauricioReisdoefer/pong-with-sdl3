@@ -6,6 +6,6 @@ typedef struct Ball
     float x, y;
     float width, height;
     float dx, dy;
-};
+} Ball;
 
 #endif
