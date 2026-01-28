@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 int check_collision_rect(
     float ax, float ay, float aw, float ah,
     float bx, float by, float bw, float bh)

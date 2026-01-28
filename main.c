@@ -7,6 +7,7 @@
 #include "render.h"
 #include "player.h"
 #include "ball.h"
+#include "collision.h"
 
 const int HEIGHT = 500;
 const int WIDTH = 750;
@@ -90,6 +91,16 @@ int main(int argc, char *argv[])
         {
             ball.x = WIDTH - ball.width;
             ball.dx *= -1;
+        }
+
+        if (check_collision_rect(
+                ball.x, ball.y, ball.width, ball.height,
+                player.x, player.y, player.width, player.height))
+        {
+            ball.x = player.x + player.width;
+            ball.dx *= -1;
+            float hitPos = (ball.y + ball.height / 2) - (player.y + player.height / 2);
+            ball.dy = hitPos * 5.0f;
         }
 
         while (SDL_PollEvent(&event))
