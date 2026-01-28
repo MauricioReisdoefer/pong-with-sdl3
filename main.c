@@ -6,9 +6,10 @@
 #include "color.h"
 #include "render.h"
 #include "player.h"
+#include "ball.h"
 
 const int HEIGHT = 500;
-const int WIDTH = 500;
+const int WIDTH = 750;
 const Color WHITE = {255, 255, 255, 255};
 const Color BLACK = {0, 0, 0, 0};
 
@@ -20,6 +21,14 @@ int main(int argc, char *argv[])
         .width = 10.0f,
         .height = 80.0f,
         .speed = 300.0f};
+
+    Ball ball = {
+        .x = WIDTH / 2.0f - 5.0f,
+        .y = HEIGHT / 2.0f - 5.0f,
+        .width = 10.0f,
+        .height = 10.0f,
+        .dx = 200.0f,
+        .dy = 200.0f};
 
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
@@ -56,6 +65,33 @@ int main(int argc, char *argv[])
             player.y -= player.speed * deltaTime;
         }
 
+        ball.x += ball.dx * deltaTime;
+        ball.y += ball.dy * deltaTime;
+
+        if (ball.y <= 0)
+        {
+            ball.y = 0;
+            ball.dy *= -1;
+        }
+
+        if (ball.y + ball.height >= HEIGHT)
+        {
+            ball.y = HEIGHT - ball.height;
+            ball.dy *= -1;
+        }
+
+        if (ball.x <= 0)
+        {
+            ball.x = 0;
+            ball.dx *= -1;
+        }
+
+        if (ball.x + ball.width >= WIDTH)
+        {
+            ball.x = WIDTH - ball.width;
+            ball.dx *= -1;
+        }
+
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_EVENT_QUIT)
@@ -63,6 +99,7 @@ int main(int argc, char *argv[])
         }
         render(renderer, &BLACK);
         draw_rect(renderer, &player, &WHITE);
+        draw_ball(renderer, &ball, &WHITE);
         SDL_RenderPresent(renderer);
     }
 
