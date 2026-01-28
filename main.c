@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "color.h"
+#include "render.h"
 
 const int HEIGHT = 500;
 const int WIDTH = 500;
@@ -32,9 +33,7 @@ int main(int argc, char *argv[])
                 running = 0;
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        SDL_RenderPresent(renderer);
+        render(renderer, &WHITE);
     }
 
     SDL_DestroyRenderer(renderer);
