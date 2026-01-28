@@ -2,8 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct Color
+{
+    int red;
+    int green;
+    int blue;
+    int alpha;
+};
+
+void draw_pixel(SDL_Renderer *renderer, int x, int y, struct Color *color)
+{
+    SDL_SetRenderDrawColor(renderer, color->red, color->green, color->blue, color->alpha);
+    SDL_RenderPoint(renderer, x, y);
+}
+
 const int HEIGHT = 500;
 const int WIDTH = 500;
+struct Color WHITE = {255, 255, 255, 255};
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +38,7 @@ int main(int argc, char *argv[])
 
     // Create a White Pixel
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderPoint(renderer, WIDTH / 2, HEIGHT / 2);
+    draw_pixel(renderer, WIDTH / 2, HEIGHT / 2, &WHITE);
 
     SDL_RenderPresent(renderer);
 
