@@ -1,24 +1,13 @@
 #include <SDL3/SDL.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Color
-{
-    int red;
-    int green;
-    int blue;
-    int alpha;
-};
-
-void draw_pixel(SDL_Renderer *renderer, int x, int y, struct Color *color)
-{
-    SDL_SetRenderDrawColor(renderer, color->red, color->green, color->blue, color->alpha);
-    SDL_RenderPoint(renderer, x, y);
-}
+#include "color.h"
 
 const int HEIGHT = 500;
 const int WIDTH = 500;
-struct Color WHITE = {255, 255, 255, 255};
+const Color WHITE = {255, 255, 255, 255};
 
 int main(int argc, char *argv[])
 {
@@ -32,18 +21,23 @@ int main(int argc, char *argv[])
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
 
-    // Clears Screen
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
+    int running = 1;
+    SDL_Event event;
 
-    // Create a White Pixel
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    draw_pixel(renderer, WIDTH / 2, HEIGHT / 2, &WHITE);
+    while (running)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_EVENT_QUIT)
+                running = 0;
+        }
 
-    SDL_RenderPresent(renderer);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+    }
 
-    SDL_Delay(5000);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
-
-    free(window);
 }
