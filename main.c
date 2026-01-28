@@ -10,7 +10,7 @@
 
 const int HEIGHT = 500;
 const int WIDTH = 750;
-const float BASE_SPEED = 300.0f;
+const float BASE_SPEED = 1.0f;
 
 const Color WHITE = {255, 255, 255, 255};
 const Color BLACK = {0, 0, 0, 255};
@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
         .width = 10.0f,
         .height = 10.0f,
         .dx = 200.0f,
-        .dy = 200.0f};
+        .dy = 200.0f,
+        .speed = BASE_SPEED};
 
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
@@ -67,23 +68,19 @@ int main(int argc, char *argv[])
 
         const bool *keys = SDL_GetKeyboardState(NULL);
 
-        /* PLAYER 1 (W / S) */
         if (keys[SDL_SCANCODE_W])
             player1.y -= player1.speed * deltaTime;
         if (keys[SDL_SCANCODE_S])
             player1.y += player1.speed * deltaTime;
 
-        /* PLAYER 2 (↑ / ↓) */
         if (keys[SDL_SCANCODE_UP])
             player2.y -= player2.speed * deltaTime;
         if (keys[SDL_SCANCODE_DOWN])
             player2.y += player2.speed * deltaTime;
 
-        /* MOVIMENTO DA BOLA */
-        ball.x += ball.dx * deltaTime;
-        ball.y += ball.dy * deltaTime;
+        ball.x += ball.dx * deltaTime * ball.speed;
+        ball.y += ball.dy * deltaTime * ball.speed;
 
-        /* COLISÃO COM PAREDES */
         if (ball.y <= 0)
         {
             ball.y = 0;
@@ -101,6 +98,7 @@ int main(int argc, char *argv[])
             ball.x = WIDTH / 2.0f;
             ball.y = HEIGHT / 2.0f;
             ball.dx = 200.0f;
+            ball.speed = BASE_SPEED;
         }
 
         if (ball.x + ball.width >= WIDTH)
@@ -108,16 +106,16 @@ int main(int argc, char *argv[])
             ball.x = WIDTH / 2.0f;
             ball.y = HEIGHT / 2.0f;
             ball.dx = -200.0f;
+            ball.speed = BASE_SPEED;
         }
 
-        /* COLISÃO COM PLAYER 1 */
         if (check_collision_rect(
                 ball.x, ball.y, ball.width, ball.height,
                 player1.x, player1.y, player1.width, player1.height))
         {
             ball.x = player1.x + player1.width;
             ball.dx *= -1;
-
+            ball.speed += 0.2f;
             float hitPos =
                 (ball.y + ball.height / 2) -
                 (player1.y + player1.height / 2);
@@ -125,14 +123,13 @@ int main(int argc, char *argv[])
             ball.dy = hitPos * 5.0f;
         }
 
-        /* COLISÃO COM PLAYER 2 */
         if (check_collision_rect(
                 ball.x, ball.y, ball.width, ball.height,
                 player2.x, player2.y, player2.width, player2.height))
         {
             ball.x = player2.x - ball.width;
             ball.dx *= -1;
-
+            ball.speed += 0.2f;
             float hitPos =
                 (ball.y + ball.height / 2) -
                 (player2.y + player2.height / 2);
