@@ -12,24 +12,6 @@ const int WIDTH = 500;
 const Color WHITE = {255, 255, 255, 255};
 const Color BLACK = {0, 0, 0, 0};
 
-void draw_rect(SDL_Renderer *renderer, Player *player, const Color *color)
-{
-    SDL_FRect rect = {
-        player->x,
-        player->y,
-        player->width,
-        player->height};
-
-    SDL_SetRenderDrawColor(
-        renderer,
-        color->red,
-        color->green,
-        color->blue,
-        color->alpha);
-
-    SDL_RenderFillRect(renderer, &rect);
-}
-
 int main(int argc, char *argv[])
 {
     Player player = {
